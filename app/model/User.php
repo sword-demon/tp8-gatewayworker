@@ -94,4 +94,14 @@ class User extends Model
     {
         return $value ? '*******' : '';
     }
+
+    /**
+     * 默认隐藏手机号码
+     * @param $value
+     * @return string
+     */
+    public function getPhoneAttr($value)
+    {
+        return maskPhoneNumber($value);
+    }
 }

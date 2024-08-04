@@ -25,12 +25,15 @@ Route::group('api/v1/', function () {
 
 // 登录之后才能操作
 Route::group('api/v1/', function () {
+    Route::post('user/send/code2', 'api.v1.User/sendCode2');
     // 修改密码
     Route::post('user/change/password', 'api.v1.User/changePassword');
     // 用户密码登录
     Route::post('user/login', 'api.v1.User/login');
     // 退出登录
     Route::post('user/logout', 'api.v1.User/logout');
+    // 上传图片
+    Route::post('upload', 'api.v1.Image/upload');
 })->middleware([
     ApiUserAuth::class
 ]);

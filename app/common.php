@@ -183,3 +183,18 @@ function isEmail($email): bool|int
 {
     return preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $email);
 }
+
+function getUploadPath($path = '')
+{
+    if (!$path) {
+        return $path;
+    }
+
+    $path = str_replace("\\", "/", $path);
+    // 将本地测试环境的地址替换成线上地址 自动将本地的替换成线上的
+    if (strpos($path, "http") !== false) {
+        return str_replace("http://127.0.0.1:8000", (request()->root(true)), $path);
+    }
+
+    return (request()->root(true)) . '/storage/' . $path;
+}

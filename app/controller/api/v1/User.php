@@ -17,7 +17,7 @@ class User extends Base
      * 暂时设置修改密码方法为无需验证器验证；测试完移除
      * @var array|string[]
      */
-    protected array $excludeValidateCheck = ['changePassword', 'logout'];
+    protected array $excludeValidateCheck = ['changePassword', 'logout', 'sendCode2'];
 
     /**
      * 获取验证码
@@ -34,6 +34,30 @@ class User extends Base
             return apiSuccess($res);
         }
         return apiSuccess('发送成功');
+    }
+
+    /**
+     * 获取验证码(用来修改密码)
+     * @return \think\response\Json
+     */
+    public function sendCode2(): \think\response\Json
+    {
+        // 获取当前用户的手机号码
+        $phone = \request()->currentUser->getData('phone');
+        if (!$phone) {
+            ApiException('请先绑定手机号');
+        }
+        try {
+            // 调用发送短信接口
+            $res = sendSms($phone);
+            // 如果是调试模式，没有开启阿里云短信，则直接将验证码返回
+            if (!config('api.aliSMS.isopen')) {
+                return apiSuccess($res);
+            }
+            return apiSuccess('发送成功');
+        } catch (\Throwable $th) {
+            ApiException($th->getMessage());
+        }
     }
 
     /**
@@ -76,7 +100,8 @@ class User extends Base
         // 获取当前用户信息
         $user = \request()->currentUser;
         // 验证验证码
-        $msg = checkSms($user->phone, $params['code']);
+        // 通过 getData 获取器获取原始信息，否则是获取的修改器修改过后的内容
+        $msg = checkSms($user->getData('phone'), $params['code']);
         if ($msg !== true) {
             ApiException($msg);
         }
