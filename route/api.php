@@ -34,6 +34,8 @@ Route::group('api/v1/', function () {
     Route::post('user/logout', 'api.v1.User/logout');
     // 上传图片
     Route::post('upload', 'api.v1.Image/upload');
+    // 发布帖子
+    Route::post('article/save', 'api.v1.Article/save');
 })->middleware([
     ApiUserAuth::class
 ]);
