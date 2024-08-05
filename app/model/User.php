@@ -13,8 +13,16 @@ use think\Model;
  */
 class User extends Model
 {
+    /**
+     * 统计和更新用户帖子数
+     * @param mixed $user
+     * @return void
+     */
     public static function updateArticlesCount(mixed $user)
     {
+        $count = Article::where('user_id', $user->id)->count();
+        $user->articles_count = $count;
+        $user->save();
     }
 
     public function getNameAttr($value, $data)

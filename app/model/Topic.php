@@ -13,6 +13,10 @@ class Topic extends Model
     // 关联今日帖子
     public static function updateArticlesCount(mixed $topic)
     {
+        $count = Article::where('topic_id', $topic->id)->count();
+        // 注意表字段名称
+        $topic->article_count = $count;
+        $topic->save();
     }
 
     public function todayArticle()

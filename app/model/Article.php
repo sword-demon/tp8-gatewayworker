@@ -53,8 +53,21 @@ class Article extends Model
         // 更新用户帖子数
         User::updateArticlesCount($article->user);
         // 更新话题帖子数
+        // 话题不一定必填
         if ($article->topic_id) {
             Topic::updateArticlesCount($article->topic);
         }
+    }
+
+    // 关联用户
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // 关联话题
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class);
     }
 }
