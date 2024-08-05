@@ -20,7 +20,27 @@ class Article extends Base
      */
     public function save(Request $request)
     {
-        //
+        $user = request()->currentUser;
+        $param = $request->param();
+        $data = [
+            'category_id' => $param['category_id'],
+            'user_id' => $user->id,
+            'content' => $param['content'],
+            'images' => $param['images']
+        ];
+        // 话题是否存在
+        if (array_key_exists('topic_id', $param) && $param['topic_id'] > 0) {
+            if (!TopicModel::find($param['topic_id'])) {
+                ApiException('话题不存在');
+            }
+            $data['topic_id'] = $param['topic_id'];
+        }
+        $article = new ArticleModel();
+        $res = $article->save($data);
+        if ($res) {
+            return apiSuccess('发布成功');
+        }
+        return apiFail('发布失败');
     }
 
 

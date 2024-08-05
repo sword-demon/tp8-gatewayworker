@@ -13,6 +13,10 @@ use think\Model;
  */
 class User extends Model
 {
+    public static function updateArticlesCount(mixed $user)
+    {
+    }
+
     public function getNameAttr($value, $data)
     {
         $name = '';

@@ -11,6 +11,10 @@ use think\Model;
 class Topic extends Model
 {
     // 关联今日帖子
+    public static function updateArticlesCount(mixed $topic)
+    {
+    }
+
     public function todayArticle()
     {
         // 查询 article 表的 创建时间字段 在今天的
