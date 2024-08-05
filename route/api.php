@@ -20,6 +20,7 @@ Route::group('api/v1/', function () {
     Route::get('category/:type', 'api.v1.Category/index');
     // 话题详情
     Route::get('topic/:id', 'api.v1.Topic/read');
+    Route::get('article/:id', 'api.v1.Article/read');
 });
 
 

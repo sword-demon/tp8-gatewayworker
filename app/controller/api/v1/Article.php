@@ -8,6 +8,7 @@ use app\controller\api\Base;
 use app\model\Article as ArticleModel;
 use app\model\Topic as TopicModel;
 use app\model\Category as CategoryModel;
+use think\response\Json;
 
 class Article extends Base
 {
@@ -44,4 +45,17 @@ class Article extends Base
     }
 
 
+    /**
+     * 帖子详情
+     * @param int $id
+     * @return Json
+     */
+    public function read(int $id)
+    {
+        $data = ArticleModel::getArticleById($id);
+        if (!$data) {
+            ApiException('帖子不存在');
+        }
+        return apiSuccess('ok', $data);
+    }
 }

@@ -17,7 +17,8 @@ class Article extends Validate
         'content|内容' => 'require',
         'category_id|分类' => 'require|integer|>=:0',
         'topic_id|话题' => 'integer',
-        'images|图片' => 'array'
+        'images|图片' => 'array',
+        'id|ID' => 'integer|require'
     ];
 
     /**
@@ -27,6 +28,15 @@ class Article extends Validate
      * @var array
      */
     protected $message = [];
+
+    /**
+     * 验证场景
+     * @var array[]
+     */
+    protected $scene = [
+        // 详情接口验证参数
+        'read' => ['id']
+    ];
 
     /**
      * save 场景

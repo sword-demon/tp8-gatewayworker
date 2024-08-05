@@ -198,3 +198,18 @@ function getUploadPath($path = '')
 
     return (request()->root(true)) . '/storage/' . $path;
 }
+
+// 根据 header 头获取当前登录用户的 id
+function getCurrentUserIdByToken($prefix = '')
+{
+    $token = request()->header('token');
+    $currentUserId = 0;
+    if ($token) {
+        $key = $prefix . $token;
+        $currentUser = cache($key);
+        if ($currentUser) {
+            $currentUserId = $currentUser['id'];
+        }
+    }
+    return $currentUserId;
+}
