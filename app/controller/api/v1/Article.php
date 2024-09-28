@@ -53,7 +53,13 @@ class Article extends Base
         // 分页页码
         $page = request()->param('page', 1);
 
-        $data = ArticleModel::getArticleList($page, $where, $order);
+        $data = [];
+        if ($key == "category_id" && $value == 0) {
+            // 查询我关注人的帖子列表
+            $data = ArticleModel::getMyFollowArticleList($page, $order);
+        } else {
+            $data = ArticleModel::getArticleList($page, $where, $order);
+        }
 
         return apiSuccess('ok', $data);
     }

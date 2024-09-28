@@ -89,6 +89,37 @@ class Article extends Model
     }
 
     /**
+     * 获取我关注的作者的帖子的分页列表
+     * @param int $page
+     * @param string $order
+     */
+    public static function getMyFollowArticleList(int $page = 1, string $order = "id desc")
+    {
+        $user_id = getCurrentUserIdByToken();
+        // 当用户没有登录的时候返回空
+        if (!$user_id) {
+            return [
+                'total' => 0,
+                'per_page' => 10,
+                'current_page' => 1,
+                'last_page' => 0,
+                'data' => []
+            ];
+        }
+
+        // 获取关注用户 id 列表
+        $userIds = Follow::getFollowIdListByUserId($user_id);
+
+        $query = self::page($page, 10)->where('user_id', 'in', $userIds)->order($order);
+        // 关联查询
+        $query = self::withArticleDetail($query);
+
+        return $query->hidden(['content'])->paginate(10)->filter(function ($item) {
+            return self::formatArticleItem($item);
+        });
+    }
+
+    /**
      * 关联我得 support 当前用户是否顶踩了帖子
      * @return \think\model\relation\HasOne
      */
