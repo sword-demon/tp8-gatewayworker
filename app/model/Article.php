@@ -68,6 +68,26 @@ class Article extends Model
         return $item;
     }
 
+    public static function getArticleList(int $page = 1, array $where = [], string $order = "id desc")
+    {
+        $query = self::page($page, 10);
+        $query = $query->order($order);
+        if (count($where) > 0) {
+            $query = $query->where($where);
+        }
+        // 排除 被我拉黑/我被拉黑作者 id
+        $blackUserIds = getBlackUsers();
+//        $query = $query->where("user_id", "not in", $blackUserIds);
+        $query = $query->whereNotIn("user_id", $blackUserIds);
+
+        // 关联查询
+        $query = self::withArticleDetail($query);
+
+        return $query->hidden(['content'])->paginate(10)->filter(function ($item) {
+            return self::formatArticleItem($item);
+        });
+    }
+
     /**
      * 关联我得 support 当前用户是否顶踩了帖子
      * @return \think\model\relation\HasOne

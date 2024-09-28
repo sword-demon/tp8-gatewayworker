@@ -18,7 +18,9 @@ class Article extends Validate
         'category_id|分类' => 'require|integer|>=:0',
         'topic_id|话题' => 'integer',
         'images|图片' => 'array',
-        'id|ID' => 'integer|require'
+        'id|ID' => 'integer|require',
+        'page|页码' => 'require|integer|>=:1',
+        'order|排序' => 'in:new,hot',
     ];
 
     /**
@@ -35,7 +37,9 @@ class Article extends Validate
      */
     protected $scene = [
         // 详情接口验证参数
-        'read' => ['id']
+        'read' => ['id'],
+        // 查询话题下帖子列表验证场景
+        'index' => ['page', 'topic_id', 'order']
     ];
 
     /**

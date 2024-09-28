@@ -3,6 +3,11 @@ declare (strict_types=1);
 
 namespace app\controller\api\v1;
 
+use app\model\ArticleReadLog;
+use app\model\Collection;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Request;
 use app\controller\api\Base;
 use app\model\Article as ArticleModel;
@@ -12,6 +17,33 @@ use think\response\Json;
 
 class Article extends Base
 {
+
+    public function index()
+    {
+        // 排序
+        $orderBy = request()->param("order");
+        $order = "id desc";
+
+        // 最新
+        if ($orderBy == "new") {
+            $order = "create_time desc";
+        } // 最热门
+        elseif ($orderBy == "hot") {
+            $order = "ding_count,id desc";
+        }
+        // 话题 ID
+        $topic_id = request()->param("topic_id", 0);
+        $where = [
+            'topic_id' => $topic_id,
+        ];
+
+        // 分页页码
+        $page = request()->param('page', 1);
+
+        $data = ArticleModel::getArticleList($page, $where, $order);
+
+        return apiSuccess('ok', $data);
+    }
 
     /**
      * 发布帖子
@@ -49,6 +81,9 @@ class Article extends Base
      * 帖子详情
      * @param int $id
      * @return Json
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function read(int $id)
     {
@@ -56,6 +91,12 @@ class Article extends Base
         if (!$data) {
             ApiException('帖子不存在');
         }
+        // 更新阅读记录
+        $data = ArticleReadLog::updateReadLog($id, $data);
+        // 判断当前用户是否收藏该帖子
+
+        // 追加一个字段进行展示
+        $data->isCollect = Collection::isCurrentUserCollectArticle($id);
         return apiSuccess('ok', $data);
     }
 }

@@ -213,3 +213,9 @@ function getCurrentUserIdByToken($prefix = '')
     }
     return $currentUserId;
 }
+
+// 获取被我拉黑或者我拉黑的用户 ID
+function getBlackUsers(): array
+{
+    return \app\model\Blacklist::getBlackUsers();
+}
