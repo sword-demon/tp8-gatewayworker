@@ -39,7 +39,7 @@ class Article extends Validate
         // 详情接口验证参数
         'read' => ['id'],
         // 查询话题下帖子列表验证场景
-        'index' => ['page', 'topic_id', 'order']
+//        'index' => ['page', 'topic_id', 'order']
     ];
 
     /**
@@ -52,6 +52,18 @@ class Article extends Validate
             ->append('category_id', 'isCategoryExist');
     }
 
+    /**
+     * index 验证场景
+     */
+    public function sceneIndex(): Article
+    {
+        $url = request()->url();
+        // 包含了 topic
+        if (str_contains($url, "topic")) {
+            return $this->only(['page', 'topic_id', 'order']);
+        }
+        return $this->only(['page', 'category_id', 'order']);
+    }
 
     /**
      * 自定义规则：验证分类是否存在

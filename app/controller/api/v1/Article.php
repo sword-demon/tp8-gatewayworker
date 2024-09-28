@@ -18,7 +18,7 @@ use think\response\Json;
 class Article extends Base
 {
 
-    public function index()
+    public function index(): Json
     {
         // 排序
         $orderBy = request()->param("order");
@@ -31,10 +31,18 @@ class Article extends Base
         elseif ($orderBy == "hot") {
             $order = "ding_count,id desc";
         }
-        // 话题 ID
-        $topic_id = request()->param("topic_id", 0);
+
+        $param = request()->param();
+        // 分类
+        $value = \request()->param('category_id', 0);
+        $key = "category_id";
+        if (array_key_exists("topic_id", $param)) {
+            $key = "topic_id";
+        }
+
+        // 话题 id 或者分类 id
         $where = [
-            'topic_id' => $topic_id,
+            $key => $value,
         ];
 
         // 分页页码

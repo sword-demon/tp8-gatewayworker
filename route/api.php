@@ -16,6 +16,8 @@ Route::group('api/v1/', function () {
 
     // 指定分类下的话题列表 注意顺序 都是 category/ 前缀起步
     Route::get('category/:category_id/topic/:page', 'api.v1.Topic/index');
+    // 指定分类下的帖子列表
+    Route::get('category/:category_id/article/:page', 'api.v1.Article/index');
     // 分类列表
     Route::get('category/:type', 'api.v1.Category/index');
     // 指定话题下的帖子列表
