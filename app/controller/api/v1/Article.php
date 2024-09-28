@@ -37,10 +37,15 @@ class Article extends Base
         $value = \request()->param('category_id', 0);
         $key = "category_id";
         if (array_key_exists("topic_id", $param)) {
+            $value = \request()->param('topic_id', 0);
             $key = "topic_id";
         }
+        if (array_key_exists("user_id", $param)) {
+            $value = \request()->param('user_id', 0);
+            $key = "user_id";
+        }
 
-        // 话题 id 或者分类 id
+        // 话题 id 或者分类 id或者用户 id
         $where = [
             $key => $value,
         ];

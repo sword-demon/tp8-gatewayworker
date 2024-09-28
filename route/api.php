@@ -18,6 +18,7 @@ Route::group('api/v1/', function () {
     Route::get('category/:category_id/topic/:page', 'api.v1.Topic/index');
     // 指定分类下的帖子列表
     Route::get('category/:category_id/article/:page', 'api.v1.Article/index');
+
     // 分类列表
     Route::get('category/:type', 'api.v1.Category/index');
     // 指定话题下的帖子列表
@@ -25,6 +26,9 @@ Route::group('api/v1/', function () {
     // 话题详情
     Route::get('topic/:id', 'api.v1.Topic/read');
     Route::get('article/:id', 'api.v1.Article/read');
+
+    // 指定用户下的帖子列表
+    Route::get('user/:user_id/article/:page', 'api.v1.Article/index');
 });
 
 

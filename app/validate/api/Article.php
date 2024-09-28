@@ -17,6 +17,7 @@ class Article extends Validate
         'content|内容' => 'require',
         'category_id|分类' => 'require|integer|>=:0',
         'topic_id|话题' => 'integer',
+        'user_id|用户ID' => 'integer|require|>=:0',
         'images|图片' => 'array',
         'id|ID' => 'integer|require',
         'page|页码' => 'require|integer|>=:1',
@@ -46,7 +47,7 @@ class Article extends Validate
      * save 场景
      * @return Article
      */
-    protected function sceneSave()
+    protected function sceneSave(): Article
     {
         return $this->only(['category_id', 'topic_id', 'content', 'images'])
             ->append('category_id', 'isCategoryExist');
@@ -59,9 +60,17 @@ class Article extends Validate
     {
         $url = request()->url();
         // 包含了 topic
+        // 为了查询指定话题下的帖子列表
         if (str_contains($url, "topic")) {
             return $this->only(['page', 'topic_id', 'order']);
         }
+        // 包含了 user
+        // 为了查询指定用户下的帖子列表
+        if (str_contains($url, "user")) {
+            return $this->only(['page', 'user_id']);
+        }
+
+        // 默认查询指定分类下的帖子列表
         return $this->only(['page', 'category_id', 'order']);
     }
 
