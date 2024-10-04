@@ -53,7 +53,6 @@ class Article extends Base
         // 分页页码
         $page = request()->param('page', 1);
 
-        $data = [];
         if ($key == "category_id" && $value == 0) {
             // 查询我关注人的帖子列表
             $data = ArticleModel::getMyFollowArticleList($page, $order);
@@ -117,5 +116,31 @@ class Article extends Base
         // 追加一个字段进行展示
         $data->isCollect = Collection::isCurrentUserCollectArticle($id);
         return apiSuccess('ok', $data);
+    }
+
+    /**
+     * 删除帖子
+     */
+    public function delete($id)
+    {
+        $user_id = \request()->userId;
+
+        $article = ArticleModel::field('id,user_id')->find($id);
+        if (!$article) {
+            ApiException('帖子不存在');
+        }
+        // 如果不是作者本人就没有权限删除
+        if ($article->user_id != $user_id) {
+            ApiException('没有权限删除');
+        }
+
+        // 删除
+        $result = $article->delete();
+
+        if (!$result) {
+            ApiException('删除失败');
+        }
+
+        return apiSuccess('删除成功');
     }
 }

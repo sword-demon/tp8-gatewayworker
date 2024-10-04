@@ -3,6 +3,10 @@ declare (strict_types=1);
 
 namespace app\model;
 
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\facade\Log;
 use think\Model;
 
 /**
@@ -18,6 +22,9 @@ class Article extends Model
      * - 关联点赞，收藏表
      * @param int $id
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public static function getArticleById(int $id)
     {
@@ -30,7 +37,7 @@ class Article extends Model
         return self::formatArticleItem($data);
     }
 
-    private static function withArticleDetail(Article $query)
+    public static function withArticleDetail(Article $query): Article
     {
         // 获取当前登录的用户 ID
         $currentUserId = getCurrentUserIdByToken();
@@ -59,7 +66,7 @@ class Article extends Model
      * @param $item
      * @return mixed
      */
-    private static function formatArticleItem($item)
+    public static function formatArticleItem($item)
     {
         $item->isfollow = $item->isfollow == null ? false : true;
         if ($item->user_support_action == null) {
@@ -198,5 +205,26 @@ class Article extends Model
     {
         // 只查询关联的话题的名称
         return $this->belongsTo(Topic::class)->bind(['topic_name' => 'title']);
+    }
+
+    /**
+     * 删除成功之后处理的事件
+     */
+    public static function onAfterDelete($model)
+    {
+        Log::info("删除帖子之后处理的事情: " . json_encode($model->toArray()));
+        // 更新用户帖子数
+        User::updateArticlesCount($model->user_id);
+        // 更新话题总帖子数
+        if ($model->topic_id) {
+            Topic::updateArticlesCount($model->topic_id);
+        }
+
+        // 删除观看记录
+        ArticleReadLog::where('article_id', $model->id)->delete();
+        // 删除收藏记录
+        Collection::where('article_id', $model->id)->delete();
+        // 删除顶踩记录
+        Support::where('article_id', $model->id)->delete();
     }
 }

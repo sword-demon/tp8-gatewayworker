@@ -45,6 +45,10 @@ Route::group('api/v1/', function () {
     Route::post('upload', 'api.v1.Image/upload');
     // 发布帖子
     Route::post('article/save', 'api.v1.Article/save');
+    // 删除帖子
+    Route::post('article/delete/:id', 'api.v1.Article/delete');
+    // 获取帖子观看记录列表
+    Route::get('article_read_log/:page', 'api.v1.ArticleReadLog/index');
 })->middleware([
     ApiUserAuth::class
 ]);

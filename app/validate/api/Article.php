@@ -39,6 +39,8 @@ class Article extends Validate
     protected $scene = [
         // 详情接口验证参数
         'read' => ['id'],
+        // 删除参数验证
+        'delete' => ['id'],
         // 查询话题下帖子列表验证场景
 //        'index' => ['page', 'topic_id', 'order']
     ];

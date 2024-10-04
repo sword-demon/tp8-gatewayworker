@@ -14,6 +14,11 @@ use think\Model;
 class ArticleReadLog extends Model
 {
 
+    public function article(): \think\model\relation\BelongsTo
+    {
+        return $this->belongsTo(Article::class);
+    }
+
     /**
      * 更新阅读记录
      * @param int $id 帖子 id
