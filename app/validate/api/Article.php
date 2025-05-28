@@ -22,6 +22,7 @@ class Article extends Validate
         'id|ID' => 'integer|require',
         'page|页码' => 'require|integer|>=:1',
         'order|排序' => 'in:new,hot',
+        'keyword|关键词' => 'require|max:255'
     ];
 
     /**
@@ -43,6 +44,7 @@ class Article extends Validate
         'delete' => ['id'],
         // 查询话题下帖子列表验证场景
 //        'index' => ['page', 'topic_id', 'order']
+        'search' => ['keyword', 'page']
     ];
 
     /**

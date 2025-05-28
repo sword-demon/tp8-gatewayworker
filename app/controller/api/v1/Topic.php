@@ -5,7 +5,11 @@ namespace app\controller\api\v1;
 
 use app\controller\api\Base;
 use app\model\Topic as TopicModel;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Request;
+use think\Response;
 
 class Topic extends Base
 {
@@ -32,7 +36,10 @@ class Topic extends Base
 
     /**
      * 获取帖子详情
-     * @return \think\Response
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function read()
     {
@@ -42,5 +49,16 @@ class Topic extends Base
             return apiFail('没有找到数据', 404);
         }
         return apiSuccess('ok', $data);
+    }
+
+    public function search()
+    {
+        $keyword = request()->param('keyword', '');
+        $page = request()->param('page', 1);
+        $where = [
+            ['title', 'like', '%' . $keyword . '%']
+        ];
+
+        return apiSuccess('ok', TopicModel::getTopicList($page, $where));
     }
 }

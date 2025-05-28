@@ -157,4 +157,51 @@ class User extends Base
 
         return apiSuccess('退出成功');
     }
+
+    /**
+     * 搜索用户
+     * @return Json
+     * @throws DbException
+     */
+    public function search()
+    {
+        $keyword = request()->param('keyword', '');
+        $page = request()->param('page', 1);
+        $query = \app\model\User::page($page, 10)
+            ->field('id,username,phone,email,avatar,create_time,fans_count,desc')
+            ->order('id', 'desc');
+
+        if (!empty($keyword)) {
+            // 匹配用户名、手机号或者邮箱
+            $query->where('username|phone|email', 'like', '%' . $keyword . '%');
+        }
+
+        $query = \app\model\User::withIsFollow($query);
+
+        $data = $query->paginate(10)->filter(function ($item) {
+            $name = '';
+            if ($item->username) {
+                $name = $item->username;
+            } elseif ($item->phone) {
+                $name = $item->phone;
+            } elseif ($item->email) {
+                $name = $item->email;
+            } else {
+                $name = '未知';
+            }
+
+            $item->name = $name;
+
+            if (!$item->desc) {
+                $item->desc = '暂无描述~';
+            }
+
+            // 是否关注
+
+
+            return $item;
+        });
+
+        return apiSuccess('ok', $data);
+    }
 }

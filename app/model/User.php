@@ -25,6 +25,27 @@ class User extends Model
         $user->save();
     }
 
+    public function isFollowCurrentUser()
+    {
+
+    }
+
+    /**
+     * 关联当前用户是否关注该作者
+     * @param User $query
+     * @param int $user_id
+     * @return void
+     */
+    public static function withIsFollow(User $query, $user_id = 0)
+    {
+        // 获取当前登录用户 id
+        if (!$user_id) {
+            $user_id = getCurrentUserIdByToken();
+        }
+        // 判断是否已关注该作者
+
+    }
+
     public function getNameAttr($value, $data)
     {
         $name = '';

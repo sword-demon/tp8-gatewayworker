@@ -29,6 +29,12 @@ Route::group('api/v1/', function () {
 
     // 指定用户下的帖子列表
     Route::get('user/:user_id/article/:page', 'api.v1.Article/index');
+    // 搜索话题
+    Route::get('search/topic/:page', 'api.v1.Topic/search');
+    // 搜索帖子
+    Route::get('search/article/:page', 'api.v1.Article/search');
+    // 搜索用户
+    Route::get('search/user/:page', 'api.v1.User/search');
 });
 
 

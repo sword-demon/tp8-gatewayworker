@@ -15,7 +15,8 @@ class Topic extends Validate
      */
     protected $rule = [
         'category_id|分类 id' => 'require|integer',
-        'page|分页' => 'require|integer'
+        'page|分页' => 'require|integer',
+        'keyword|关键词' => 'require|max:255'
     ];
 
     /**
@@ -28,6 +29,8 @@ class Topic extends Validate
 
     // 验证场景
     protected $scene = [
-        'index' => ['category_id', 'page']
+        'index' => ['category_id', 'page'],
+        'read' => ['id'],
+        'search' => ['keyword', 'page']
     ];
 }

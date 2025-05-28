@@ -17,7 +17,9 @@ class User extends Validate
         'phone' => ['require', 'mobile'],
         'code' => ['require', 'length:6'],
         'password' => ['require'],
-        'username' => ['require']
+        'username' => ['require'],
+        'keyword' => ['require', 'max:100'],
+        'page' => ['require', 'integer', '>:0']
     ];
 
     /**
@@ -33,6 +35,9 @@ class User extends Validate
         'code.length' => '验证码长度不超过 6',
         'password.require' => '密码不能为空',
         'username.require' => '用户名不能为空',
+        'keyword.require' => '关键字不能为空',
+        'keyword.max' => '关键字嘴多 100 个字',
+        'page.require' => '分页不能为空'
     ];
 
     /**
@@ -47,6 +52,7 @@ class User extends Validate
         'phoneLogin' => ['phone', 'code'],
         // 用户名密码登录
         'login' => ['username', 'password'],
+        'search' => ['keyword', 'page']
     ];
 
     // 修改密码验证场景

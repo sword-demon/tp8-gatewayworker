@@ -12,7 +12,6 @@ use think\Request;
 use app\controller\api\Base;
 use app\model\Article as ArticleModel;
 use app\model\Topic as TopicModel;
-use app\model\Category as CategoryModel;
 use think\response\Json;
 
 class Article extends Base
@@ -142,5 +141,20 @@ class Article extends Base
         }
 
         return apiSuccess('删除成功');
+    }
+
+    /**
+     * 搜索帖子
+     * @return Json
+     */
+    public function search(): Json
+    {
+        $keyword = request()->param('keyword', '');
+        $page = request()->param('page', 1);
+        $where = [
+            ['content', 'like', '%' . $keyword . '%']
+        ];
+
+        return apiSuccess('ok', ArticleModel::getArticleList($page, $where));
     }
 }
